@@ -56,7 +56,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
 
         @Override
         public DataSource resolve(final String resourceLocation, final boolean isLenient) throws IOException {
-            final jakarta.mail.util.ByteArrayDataSource ds = (jakarta.mail.util.ByteArrayDataSource) super.resolve(resourceLocation, isLenient);
+            final jakarta.mail.util.ByteArrayDataSource ds = (jakarta.mail.util.ByteArrayDataSource) super.resolve(
+                    resourceLocation, isLenient);
             ds.setName(null);
             return ds;
         }
@@ -66,7 +67,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
     private static final boolean TEST_IS_LENIENT = true;
     private static final URL TEST_IMAGE_URL = ImageHtmlEmailTest.class.getResource("/images/asf_logo_wide.gif");
     private static final File TEST_IMAGE_DIR = new File(TEST_IMAGE_URL.getPath()).getParentFile();
-    private static final URL TEST_HTML_URL = ImageHtmlEmailTest.class.getResource("/attachments/download_email.cgi.html");
+    private static final URL TEST_HTML_URL = ImageHtmlEmailTest.class
+            .getResource("/attachments/download_email.cgi.html");
 
     private static final URL TEST2_HTML_URL = ImageHtmlEmailTest.class.getResource("/attachments/classpathtest.html");
 
@@ -112,14 +114,16 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
         email.setDataSourceResolver(new DataSourceUrlResolver(TEST_IMAGE_DIR.toURI().toURL(), TEST_IS_LENIENT));
 
         // set the html message
-        email.setHtmlMsg("<html><body><img title=\"$\" src=\"http://www.apache.org/images/feather.gif\"/></body></html>");
+        email.setHtmlMsg(
+                "<html><body><img title=\"$\" src=\"http://www.apache.org/images/feather.gif\"/></body></html>");
 
         // send the email
         email.send();
 
         fakeMailServer.stop();
         // validate txt message
-        validateSend(fakeMailServer, strSubject, email.getHtml(), email.getFromAddress(), email.getToAddresses(), email.getCcAddresses(),
+        validateSend(fakeMailServer, strSubject, email.getHtml(), email.getFromAddress(), email.getToAddresses(),
+                email.getCcAddresses(),
                 email.getBccAddresses(), true);
     }
 
@@ -169,7 +173,9 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
         matcher = pattern.matcher(
                 "<img alt=\"Chart?ck=xradar&amp;w=120&amp;h=120&amp;c=7fff00|7fff00&amp;m=4&amp;g=0\" src=\"/chart?ck=xradar&amp;w=120&amp;h=120&amp;c=7fff00|7fff00&amp;m=4&amp;g=0.2&amp;l=A,C,S,T&amp;v=3.0,3.0,2.0,2.0\"");
         assertTrue(matcher.find());
-        assertEquals("/chart?ck=xradar&amp;w=120&amp;h=120&amp;c=7fff00|7fff00&amp;m=4&amp;g=0.2&amp;l=A,C,S,T&amp;v=3.0,3.0,2.0,2.0", matcher.group(2));
+        assertEquals(
+                "/chart?ck=xradar&amp;w=120&amp;h=120&amp;c=7fff00|7fff00&amp;m=4&amp;g=0.2&amp;l=A,C,S,T&amp;v=3.0,3.0,2.0,2.0",
+                matcher.group(2));
 
         // had a problem with multiple img-source tags
         matcher = pattern.matcher("<img src=\"file1\"/><img src=\"file2\"/>");
@@ -178,7 +184,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
         assertTrue(matcher.find());
         assertEquals("file2", matcher.group(2));
 
-        matcher = pattern.matcher("<img src=\"file1\"/><img src=\"file2\"/><img src=\"file3\"/><img src=\"file4\"/><img src=\"file5\"/>");
+        matcher = pattern.matcher(
+                "<img src=\"file1\"/><img src=\"file2\"/><img src=\"file3\"/><img src=\"file4\"/><img src=\"file5\"/>");
         assertTrue(matcher.find());
         assertEquals("file1", matcher.group(2));
         assertTrue(matcher.find());
@@ -190,7 +197,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
         assertTrue(matcher.find());
         assertEquals("file5", matcher.group(2));
 
-        // try with invalid HTML that is seems sometimes, i.e. without closing "/" or "</img>"
+        // try with invalid HTML that is seems sometimes, i.e. without closing "/" or
+        // "</img>"
         matcher = pattern.matcher("<img src=\"file1\"><img src=\"file2\">");
         assertTrue(matcher.find());
         assertEquals("file1", matcher.group(2));
@@ -230,7 +238,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
 
         assertEquals(1, fakeMailServer.getMessages().size());
         final MimeMessage mimeMessage = fakeMailServer.getMessages().get(0).getMimeMessage();
-        MimeMessageUtils.writeMimeMessage(mimeMessage, new File("./target/test-emails/testSendClassPathFileWithNullName.eml"));
+        MimeMessageUtils.writeMimeMessage(mimeMessage,
+                new File("./target/test-emails/testSendClassPathFileWithNullName.eml"));
 
         final MimeMessageParser mimeMessageParser = new MimeMessageParser(mimeMessage).parse();
         assertTrue(mimeMessageParser.getHtmlContent().contains("\"cid:"));
@@ -298,7 +307,7 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
 
         final MimeMessageParser mimeMessageParser = new MimeMessageParser(mimeMessage).parse();
         assertTrue(mimeMessageParser.getHtmlContent().contains("\"cid:"));
-        assertEquals(1, mimeMessageParser.getAttachmentList().size());
+        assertEquals(3, mimeMessageParser.getAttachmentList().size());
     }
 
     @Test
@@ -320,7 +329,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
         email.setDataSourceResolver(new DataSourceUrlResolver(TEST_IMAGE_DIR.toURI().toURL(), TEST_IS_LENIENT));
 
         final File file = File.createTempFile("emailtest", ".tst");
-        FileUtils.writeStringToFile(file, "just some silly data that we won't be able to display anyway", StandardCharsets.UTF_8);
+        FileUtils.writeStringToFile(file, "just some silly data that we won't be able to display anyway",
+                StandardCharsets.UTF_8);
 
         // set the html message
         email.setHtmlMsg("<html><body><img src=\"" + file.getAbsolutePath() + "\"/></body></html>");
@@ -330,7 +340,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
 
         fakeMailServer.stop();
         // validate txt message
-        validateSend(fakeMailServer, strSubject, email.getHtml(), email.getFromAddress(), email.getToAddresses(), email.getCcAddresses(),
+        validateSend(fakeMailServer, strSubject, email.getHtml(), email.getFromAddress(), email.getToAddresses(),
+                email.getCcAddresses(),
                 email.getBccAddresses(), true);
     }
 
@@ -396,7 +407,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
         email.addTo(strTestMailTo);
         email.setSubject(strSubject);
 
-        final String html = "<p>First image  <img src=\"images/contentTypeTest.gif\"/></p>" + "<p>Second image <img src=\"images/contentTypeTest.jpg\"/></p>"
+        final String html = "<p>First image  <img src=\"images/contentTypeTest.gif\"/></p>"
+                + "<p>Second image <img src=\"images/contentTypeTest.jpg\"/></p>"
                 + "<p>Third image  <img src=\"images/contentTypeTest.png\"/></p>";
 
         // set the html message
@@ -412,7 +424,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
 
         assertEquals(1, fakeMailServer.getMessages().size());
         final MimeMessage mimeMessage = fakeMailServer.getMessages().get(0).getMimeMessage();
-        MimeMessageUtils.writeMimeMessage(mimeMessage, new File("./target/test-emails/testSendHTMLAutoMultipleFiles.eml"));
+        MimeMessageUtils.writeMimeMessage(mimeMessage,
+                new File("./target/test-emails/testSendHTMLAutoMultipleFiles.eml"));
 
         final MimeMessageParser mimeMessageParser = new MimeMessageParser(mimeMessage).parse();
         assertTrue(mimeMessageParser.getHtmlContent().contains("\"cid:"), mimeMessageParser.getHtmlContent());
@@ -483,7 +496,8 @@ public class ImageHtmlEmailTest extends HtmlEmailTest {
 
         fakeMailServer.stop();
         // validate txt message
-        validateSend(fakeMailServer, strSubject, email.getHtml(), email.getFromAddress(), email.getToAddresses(), email.getCcAddresses(),
+        validateSend(fakeMailServer, strSubject, email.getHtml(), email.getFromAddress(), email.getToAddresses(),
+                email.getCcAddresses(),
                 email.getBccAddresses(), true);
     }
 }
